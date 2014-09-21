@@ -10,7 +10,7 @@
 #include "h264tortp.h"
 
 #define DEFAULT_DEST_PORT           1234
-#define RTP_PAYLOAD_MAX_SIZE        1400
+#define RTP_PAYLOAD_MAX_SIZE        1400//为何不是mtu 1500 载荷不包括头部
 #define SEND_BUF_SIZE               1500
 #define NAL_BUF_SIZE                1500 * 50
 #define SSRC_NUM                    10
@@ -472,7 +472,10 @@ int main(int argc, char **argv)
 #endif
         ret = h264nal2rtp_send(25, nal_buf, len, CLIENT_IP_LIST);
         if (ret != -1)
-            usleep(1000 * 20);
+        {
+            usleep(1000 * 60);//40ms 太慢会导致，卡顿并重新播放。太快会导致客户端卡住花屏并不播放。
+//            msleep(40);
+        }
     }
     debug_print();
 
